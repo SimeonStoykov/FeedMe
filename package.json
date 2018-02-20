@@ -1,0 +1,10 @@
+{
+  "name": "feedme",
+  "version": "1.0.0",
+  "description": "Project consuming and recording data from provider TCP server.",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "",
+  "license": "ISC"
+}
