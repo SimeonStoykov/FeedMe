@@ -28,7 +28,6 @@ tcpClient.on('data', buffer => {
 
     for (let i = 0; i < dataArr.length; i++) {
         let currentData = dataArr[i];
-        // console.log(currentData);
         let dataElements = reverseStr(currentData).split(/\|(?!\\)/g).filter(rec => rec !== '').reverse().map(rec => reverseStr(rec).replace(/\\\|/g, '|'));
         // console.log(dataElements);
         let msgId = Number(dataElements[0]);
@@ -85,7 +84,56 @@ tcpClient.on('data', buffer => {
                 break;
             }
         } else if (operation === 'update') {
-            
+            switch (type) {
+                case 'event': {
+                    let existingEvent = events.find(rec => rec.eventId === dataElements[4]);
+                    if (existingEvent) {
+                        let newStartTime = Number(dataElements[8]);
+                        let newDisplayed = dataElements[9] === '1';
+                        let newSuspended = dataElements[10] === '1';
+                        existingEvent.eventId !== dataElements[4] && (existingEvent.eventId = dataElements[4]);
+                        existingEvent.category !== dataElements[5] && (existingEvent.category = dataElements[5]);
+                        existingEvent.subCategory !== dataElements[6] && (existingEvent.subCategory = dataElements[6]);
+                        existingEvent.name !== dataElements[7] && (existingEvent.name = dataElements[7]);
+                        existingEvent.startTime !== newStartTime && (existingEvent.startTime = newStartTime);
+                        existingEvent.displayed !== newDisplayed && (existingEvent.displayed = newDisplayed);
+                        existingEvent.suspended !== newSuspended && (existingEvent.suspended = newSuspended);
+                    }
+                }
+                break;
+                case 'market': {
+                    // let event = events.find(rec => rec.eventId === dataElements[4]);
+                    // if (event) {
+                    //     event.markets.push({
+                    //         eventId: dataElements[4],
+                    //         marketId: dataElements[5],
+                    //         name: dataElements[6],
+                    //         displayed: dataElements[7] === '1',
+                    //         suspended: dataElements[8] === '1',
+                    //         outcomes: []
+                    //     });
+                    // }
+                }
+                break;
+                case 'outcome': {
+                    // for (let i = 0; i < events.length; i++) {
+                    //     let currentEvent = events[i];
+                    //     let market = currentEvent.markets.find(rec => rec.marketId === dataElements[4]);
+                    //     if (market) {
+                    //         market.outcomes.push({
+                    //             marketId: dataElements[4],
+                    //             outcomeId: dataElements[5],
+                    //             name: dataElements[6],
+                    //             price: dataElements[7],
+                    //             displayed: dataElements[8] === '1',
+                    //             suspended: dataElements[9] === '1'
+                    //         });
+                    //         break;
+                    //     }
+                    // }
+                }
+                break;
+            }
         }
     }
 
