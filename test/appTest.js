@@ -5,7 +5,7 @@ const processData = require('../processData');
 
 let socket, events, previousData;
 
-beforeEach(function() {
+beforeEach(() => {
     events = [];
     previousData = '';
     socket = new net.Socket();

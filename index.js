@@ -1,22 +1,32 @@
 const net = require('net');
-let { host, port } = require('./config');
+let { app, mongodb } = require('./config');
 let processData = require('./processData');
 
-let events = [];
+// let events = [];
 let previousData = '';
+let database;
 
 let tcpClient = new net.Socket();
 
-tcpClient.connect(port, host, () => {
-	console.log('Connected');
+let MongoClient = require('mongodb').MongoClient;
+
+MongoClient.connect(mongodb.url, (err, client) => {
+    if (err) throw err;
+    console.log("Database created!");
+
+    database = client.db("EventsDb");
+
+    tcpClient.connect(app.port, app.host, () => {
+        console.log('TCP Client Connected!');
+    });
 });
 
 tcpClient.on('data', buffer => {
-    let result = processData(buffer, events, previousData);
-    events = result.events;
+    let result = processData(buffer, undefined, previousData, database);
+    // events = result.events;
     previousData = result.previousData;
 });
 
 tcpClient.on('close', () => {
-	console.log('Connection closed');
+    console.log('Connection closed');
 });
