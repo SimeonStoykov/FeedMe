@@ -2,7 +2,6 @@ const net = require('net');
 let { app, mongodb } = require('./config');
 let processData = require('./processData');
 
-// let events = [];
 let previousData = '';
 let database;
 
@@ -23,7 +22,6 @@ MongoClient.connect(mongodb.url, (err, client) => {
 
 tcpClient.on('data', buffer => {
     let result = processData(buffer, undefined, previousData, database);
-    // events = result.events;
     previousData = result.previousData;
 });
 

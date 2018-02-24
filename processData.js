@@ -55,7 +55,9 @@ module.exports = function (data, events, previousData, database) {
                     };
 
                     if (database) {
-                        database.collection('markets').insertOne(market);
+                        let query = { eventId: market.eventId };
+                        let newValues = { $push: { markets: market } };
+                        database.collection('events').updateOne(query, newValues);
                     } else if (events) { // Unit testing with in memory object
                         let event = events.find(rec => rec.eventId === market.eventId);
                         event && event.markets.push(market);
@@ -73,7 +75,9 @@ module.exports = function (data, events, previousData, database) {
                     };
 
                     if (database) {
-                        database.collection('outcomes').insertOne(outcome);
+                        let query = { 'markets.marketId': outcome.marketId };
+                        let newValues = { $push: { 'markets.$.outcomes': outcome } };
+                        database.collection('events').updateOne(query, newValues);
                     } else if (events) { // Unit testing with in memory object
                         for (let i = 0; i < events.length; i++) {
                             let currentEvent = events[i];
@@ -100,7 +104,8 @@ module.exports = function (data, events, previousData, database) {
                     }
 
                     if (database) {
-                        database.collection('events').updateOne({ eventId: dataElements[4] }, { $set: newEventData });
+                        let query = { eventId: dataElements[4] };
+                        database.collection('events').updateOne(query, { $set: newEventData });
                     } else if (events) { // Unit testing with in memory object
                         let existingEvent = events.find(rec => rec.eventId === dataElements[4]);
                         if (existingEvent) {
@@ -122,7 +127,15 @@ module.exports = function (data, events, previousData, database) {
                     };
 
                     if (database) {
-                        database.collection('markets').updateOne({ marketId: dataElements[5] }, { $set: newMarketData });
+                        let query = { 'markets.marketId': dataElements[5] };
+                        let newValues = {
+                            $set: {
+                                'markets.$.name': newMarketData.name,
+                                'markets.$.displayed': newMarketData.displayed,
+                                'markets.$.suspended': newMarketData.suspended
+                            }
+                        };
+                        database.collection('events').updateOne(query, newValues);
                     } else if (events) { // Unit testing with in memory object
                         let event = events.find(rec => rec.eventId === dataElements[4]);
                         if (event) {
@@ -145,7 +158,25 @@ module.exports = function (data, events, previousData, database) {
                     };
 
                     if (database) {
-                        database.collection('outcomes').updateOne({ outcomeId: dataElements[5] }, { $set: newOutcomeData });
+                        database.collection('events').findOne(
+                            { 'markets.outcomes.outcomeId': dataElements[5] },
+                            (err, res) => {
+                                if (res) {
+                                    let market = res.markets.find(m => m.marketId === dataElements[4]);
+                                    let marketIndex = res.markets.map(m => m.marketId).indexOf(dataElements[4]);
+                                    let outcomeIndex = market.outcomes.map(o => o.outcomeId).indexOf(dataElements[5]);
+                                    let newValues = {
+                                        $set: {
+                                            [`markets.${marketIndex}.outcomes.${outcomeIndex}.name`]: newOutcomeData.name,
+                                            [`markets.${marketIndex}.outcomes.${outcomeIndex}.price`]: newOutcomeData.price,
+                                            [`markets.${marketIndex}.outcomes.${outcomeIndex}.displayed`]: newOutcomeData.displayed,
+                                            [`markets.${marketIndex}.outcomes.${outcomeIndex}.suspended`]: newOutcomeData.suspended
+                                        }
+                                    };
+                                    database.collection('events').updateOne({ eventId: res.eventId }, newValues);
+                                }
+                            }
+                        );
                     } else if (events) {
                         for (let i = 0; i < events.length; i++) {
                             let currentEvent = events[i];
