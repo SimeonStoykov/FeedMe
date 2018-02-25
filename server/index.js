@@ -89,14 +89,8 @@ tcpClient.on('close', () => {
     console.log('Connection closed');
 });
 
-
-
-// app.get('/api/events', function (req, res) {
-//     database.collection('comments', function (err, data) {
-//         if (err) throw err;
-//         data.find();
-//         res.render('help', { data: data });
-//     });
-// });
-
-// app.use(express.static(__dirname + '/static'));
+// TO DO:
+// 1. Emit events when market or outcome is created/updated and check in the client if this market/outcome is in the events array and if it is in it update it
+// 2. Show last 10 events for category and subcategory pair
+// 3. Show Load more button to load another 10 events
+// 4. On event click open the event details + outcomes

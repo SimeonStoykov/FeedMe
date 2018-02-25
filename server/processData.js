@@ -16,7 +16,7 @@ module.exports = function (data, events, previousData, database, io) {
 
     for (let i = 0; i < dataArr.length; i++) {
         let currentData = dataArr[i];
-        let dataElements = reverseStr(currentData).split(/\|(?!\\)/g).filter(rec => rec !== '').reverse().map(rec => reverseStr(rec).replace(/\\\|/g, '|'));
+        let dataElements = reverseStr(currentData).split(/\|(?!\\)/g).filter(rec => rec !== '').reverse().map(rec => reverseStr(rec).replace(/\\\|/g, ''));
 
         let msgId = parseInt(dataElements[0]);
         let operation = dataElements[1];
