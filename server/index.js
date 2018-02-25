@@ -32,10 +32,6 @@ router.get('/events', (req, res) => {
     let perPage = 10;
     let page = req.params.page || 1;
 
-    debugger;
-
-    console.log(req);
-
     let cursor = database.collection('events')
         .find({category, subCategory});
         // .skip((perPage * page) - perPage)
@@ -55,7 +51,7 @@ router.get('/events', (req, res) => {
             events.push(doc);
         }, () => {
             res.json({ 
-                events, 
+                events,
                 // pagination: {
                 //     page,
                 //     perPage,

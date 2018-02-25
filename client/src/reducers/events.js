@@ -1,6 +1,8 @@
 const initialState = {
     selectedCategory: '',
-    events: []
+    events: [],
+    fetchingEventsError: false,
+    eventsAreLoading: false
 };
 
 const eventsReducer = (state = initialState, action) => {
@@ -9,9 +11,12 @@ const eventsReducer = (state = initialState, action) => {
             return { ...state, events: [...state.events, action.data] };
         case 'SELECT_CATEGORY':
             return { ...state, selectedCategory: action.data };
-        case 'GET_EVENTS':
-            console.log(action.response);
-            return state;
+        case 'EVENTS_ARE_LOADING':
+            return { ...state, eventsAreLoading: action.eventsAreLoading };
+        case 'EVENTS_FETCH_SUCCESS':
+            return { ...state, events: action.response.events, eventsAreLoading: false };
+        case 'EVENTS_FETCH_ERROR':
+            return { ...state, fetchingEventsError: action.fetchingEventsError, eventsAreLoading: false };
         default:
             return state;
     }

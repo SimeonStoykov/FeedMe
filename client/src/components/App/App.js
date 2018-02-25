@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import {
   addEvent,
   selectCategory,
-  getEvents
+  fetchEvents
 } from '../../actions';
 
 import Category from '../Category/Category';
@@ -84,19 +84,6 @@ class App extends Component {
     // socket.disconnect();
   }
 
-  // getEvents(subCategory) {
-  //   fetch(`http://127.0.0.1:8787/api/events?category=${encodeURIComponent(this.props.selectedCategory)}&subCategory=${encodeURIComponent(subCategory)}`, {
-  //     method: 'GET'
-  //   })
-  //     .then(response => response.json())
-  //     // .then(response => {
-  //     //   return dispatch({
-  //     //     type: 'GET_EVENTS',
-  //     //     response
-  //     //   });
-  //     // });
-  // }
-
   render() {
     return (
       <div className="app">
@@ -104,7 +91,19 @@ class App extends Component {
         <Category categories={categories} selectCategory={this.props.selectCategory} />
         {
           this.props.selectedCategory &&
-          <Subcategory subcategories={subcategories[this.props.selectedCategory]} selectedCategory={this.props.selectedCategory} getEvents={this.props.getEvents} />
+          <Subcategory subcategories={subcategories[this.props.selectedCategory]} selectedCategory={this.props.selectedCategory} fetchData={this.props.fetchData} />
+        }
+        {this.props.eventsAreLoading && <div>Loading...</div>}
+        {this.props.fetchingEventsError && <div>Error</div>}
+        {
+          this.props.events.length > 0 &&
+          this.props.events.map(e => {
+            return (
+              <div>
+                {e.name}
+              </div>
+            );
+          })
         }
       </div>
     );
@@ -114,14 +113,18 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     selectedCategory: state.eventsReducer.selectedCategory,
-    events: state.eventsReducer.events
+    events: state.eventsReducer.events,
+    eventsAreLoading: state.eventsReducer.eventsAreLoading,
+    fetchingEventsError: state.eventsReducer.fetchingEventsError
   };
 }
 
-const mapDispatchToProps = {
-  addEvent,
-  selectCategory,
-  getEvents
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addEvent: (event) => dispatch(addEvent(event)),
+    selectCategory: (selectedCategory) => dispatch(selectCategory(selectedCategory)),
+    fetchData: (url) => dispatch(fetchEvents(url))
+  }
 };
 
 const EventsApp = connect(

@@ -12,22 +12,35 @@ export const selectCategory = data => {
   }
 };
 
-export function getEvents({ category, subCategory }) {
-  try {
-    fetch(`http://127.0.0.1:8787/api/events?category=${encodeURIComponent(category)}&subCategory=${encodeURIComponent(subCategory)}`, {
-      method: 'GET'
-    })
+export const eventsFetchError = bool => {
+  return {
+    type: 'EVENTS_FETCH_ERROR',
+    fetchingEventsError: bool
+  };
+}
+
+export const eventsAreLoading = bool => {
+  return {
+    type: 'EVENTS_ARE_LOADING',
+    eventsAreLoading: bool
+  };
+}
+
+export const eventsFetchSuccess = response => {
+  return {
+    type: 'EVENTS_FETCH_SUCCESS',
+    response
+  };
+}
+
+export function fetchEvents(url) {
+  return dispatch => {
+    dispatch(eventsAreLoading(true));
+
+    fetch(url)
+      // .then(response => response)
       .then(response => response.json())
-      .then(response => {
-        console.log(response);
-        return {
-          type: 'GET_EVENTS',
-          response
-        };
-      });
-  } catch (e) {
-    return {
-      type: 'GET_EVENTS'
-    };
-  }
+      .then(response => dispatch(eventsFetchSuccess(response)))
+      .catch(() => dispatch(eventsFetchError(true)));
+  };
 }
