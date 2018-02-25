@@ -1,0 +1,11 @@
+.app {
+  text-align: center;
+}
+
+.app-title {
+  background-color: #153f8e;
+  font-size: 3.3em;
+  color: #fff;
+  margin: 0;
+  padding: 10px;
+}

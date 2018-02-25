@@ -5,7 +5,7 @@ function reverseStr(str) {
     return str.split('').reverse().join('');
 }
 
-module.exports = function (data, events, previousData, database) {
+module.exports = function (data, events, previousData, database, io) {
     let receivedData = data.toString();
     let lastNewLine = receivedData.lastIndexOf('\n');
     let wholeData = previousData + receivedData.substring(0, lastNewLine);
@@ -38,7 +38,9 @@ module.exports = function (data, events, previousData, database) {
                     };
 
                     if (database) {
-                        database.collection('events').insertOne(event);
+                        database.collection('events').insertOne(event, (err, doc) => {
+                            io.sockets.emit('eventAdded', event);
+                        });
                     } else if (events) { // Unit testing with in memory object
                         events.push(event);
                     }

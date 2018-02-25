@@ -1,0 +1,24 @@
+.category-container {
+    background-color: #020231;
+    color: #d0d0bb;
+    width: 20%;
+    float: left;
+    height: 555px;
+}
+
+.category-title {
+    color: #fff;
+    margin-bottom: 10px;
+    margin-top: 0;
+    padding-top: 20px;
+    font-size: 2.3em;
+}
+
+.category {
+    font-size: 1.3em;
+    padding: 10px;
+}
+
+.category:hover {
+    cursor: pointer;
+}

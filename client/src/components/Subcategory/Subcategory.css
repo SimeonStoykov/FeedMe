@@ -1,0 +1,19 @@
+.subcategory {
+    background-color: #dce3ed;
+    text-align: left;
+    padding: 15px;
+    font-size: 1.1em;
+    margin: 7px;
+    border-radius: 5px;
+    color: #3c3c3c;
+}
+
+.subcategory:hover {
+    background-color: #dce3ed;
+    cursor: pointer;
+}
+
+.subcategory-container {
+    float: left;
+    width: 80%;
+}
