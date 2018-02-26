@@ -12,6 +12,20 @@ export const selectCategory = data => {
   }
 };
 
+export const selectSubcategory = data => {
+  return {
+    type: 'SELECT_SUBCATEGORY',
+    data
+  }
+};
+
+export const showFixture = data => {
+  return {
+    type: 'SHOW_FIXTURE',
+    data
+  }
+};
+
 export const eventsFetchError = bool => {
   return {
     type: 'EVENTS_FETCH_ERROR',
@@ -38,7 +52,6 @@ export function fetchEvents(url) {
     dispatch(eventsAreLoading(true));
 
     fetch(url)
-      // .then(response => response)
       .then(response => response.json())
       .then(response => dispatch(eventsFetchSuccess(response)))
       .catch(() => dispatch(eventsFetchError(true)));

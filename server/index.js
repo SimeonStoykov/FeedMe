@@ -32,8 +32,7 @@ router.get('/events', (req, res) => {
     let perPage = 10;
     let page = req.params.page || 1;
 
-    let cursor = database.collection('events')
-        .find({category, subCategory});
+    let cursor = database.collection('events').find({category, subCategory, displayed: true}).limit(perPage).sort({startTime: 1});
         // .skip((perPage * page) - perPage)
         // .limit(perPage);
         // .exec(function (err, events) {
@@ -91,6 +90,5 @@ tcpClient.on('close', () => {
 
 // TO DO:
 // 1. Emit events when market or outcome is created/updated and check in the client if this market/outcome is in the events array and if it is in it update it
-// 2. Show last 10 events for category and subcategory pair
 // 3. Show Load more button to load another 10 events
 // 4. On event click open the event details + outcomes

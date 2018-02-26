@@ -9,11 +9,20 @@
 }
 
 .subcategory:hover {
-    background-color: #dce3ed;
     cursor: pointer;
 }
 
 .subcategory-container {
     float: left;
-    width: 80%;
+    width: 30%;
+}
+
+.subcategory-selected {
+    color: #fff;
+    background-color: #132c6c;
+}
+
+.subcategories-title {
+    border-bottom: 5px solid #020231;
+    padding-bottom: 20px; 
 }

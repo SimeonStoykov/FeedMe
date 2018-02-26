@@ -1,0 +1,44 @@
+.fixtures-list-container {
+    float: left;
+    width: 50%;
+}
+
+.fixtures-list,
+.fixtures-list-suspended {
+    padding: 15px;
+    font-size: 1.1em;
+    margin: 7px;
+    border-radius: 5px;
+    color: #3c3c3c;
+    border: 2px solid #e4ebf3;
+}
+
+.fixtures-list:hover {
+    background-color: #dce3ed;
+    cursor: pointer;
+}
+
+.error-loading-fixtures {
+    color: red;
+}
+
+.fixtures-list-date {
+    display: inline-block;
+    width: 40%;
+    text-align: left;
+}
+
+.fixtures-list-name {
+    display: inline-block;
+    width: 60%;
+    text-align: left;
+}
+
+.fixtures-list-title {
+    border-bottom: 5px solid #020231;
+    padding-bottom: 20px; 
+}
+
+.fixtures-list-suspended:hover {
+    cursor: not-allowed;
+}

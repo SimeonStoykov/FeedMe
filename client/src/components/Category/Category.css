@@ -3,7 +3,7 @@
     color: #d0d0bb;
     width: 20%;
     float: left;
-    height: 555px;
+    height: 100vh;
 }
 
 .category-title {
@@ -21,4 +21,9 @@
 
 .category:hover {
     cursor: pointer;
+}
+
+.category-selected {
+    color: #fff;
+    background-color: #132c6c;
 }

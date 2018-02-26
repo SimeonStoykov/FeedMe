@@ -5,12 +5,15 @@ import { connect } from 'react-redux';
 import {
   addEvent,
   selectCategory,
-  fetchEvents
+  selectSubcategory,
+  fetchEvents,
+  showFixture
 } from '../../actions';
 
 import Category from '../Category/Category';
 import Subcategory from '../Subcategory/Subcategory';
-
+import FixturesList from '../FixturesList/FixturesList';
+import Fixture from '../Fixture/Fixture';
 // let socket = io('http://127.0.0.1:8787');
 
 let categories = [
@@ -88,22 +91,18 @@ class App extends Component {
     return (
       <div className="app">
         <h1 className="app-title">Bet</h1>
-        <Category categories={categories} selectCategory={this.props.selectCategory} />
+        <Category categories={categories} selectCategory={this.props.selectCategory} selectedCategory={this.props.selectedCategory} />
         {
           this.props.selectedCategory &&
-          <Subcategory subcategories={subcategories[this.props.selectedCategory]} selectedCategory={this.props.selectedCategory} fetchData={this.props.fetchData} />
+          <Subcategory subcategories={subcategories[this.props.selectedCategory]} selectedCategory={this.props.selectedCategory} selectedSubcategory={this.props.selectedSubcategory} selectSubcategory={this.props.selectSubcategory} fetchData={this.props.fetchData} />
         }
-        {this.props.eventsAreLoading && <div>Loading...</div>}
-        {this.props.fetchingEventsError && <div>Error</div>}
         {
-          this.props.events.length > 0 &&
-          this.props.events.map(e => {
-            return (
-              <div>
-                {e.name}
-              </div>
-            );
-          })
+          this.props.selectedSubcategory &&
+          <FixturesList selectedSubcategory={this.props.selectedSubcategory} events={this.props.events} eventsAreLoading={this.props.eventsAreLoading} fetchingEventsError={this.props.fetchingEventsError} showFixture={this.props.showFixture} />
+        }
+        {
+          this.props.selectedFixture &&
+          <Fixture selectedFixture={this.props.selectedFixture} />
         }
       </div>
     );
@@ -113,6 +112,8 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     selectedCategory: state.eventsReducer.selectedCategory,
+    selectedSubcategory: state.eventsReducer.selectedSubcategory,
+    selectedFixture: state.eventsReducer.selectedFixture,
     events: state.eventsReducer.events,
     eventsAreLoading: state.eventsReducer.eventsAreLoading,
     fetchingEventsError: state.eventsReducer.fetchingEventsError
@@ -123,7 +124,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addEvent: (event) => dispatch(addEvent(event)),
     selectCategory: (selectedCategory) => dispatch(selectCategory(selectedCategory)),
-    fetchData: (url) => dispatch(fetchEvents(url))
+    selectSubcategory: (selectedSubcategory) => dispatch(selectSubcategory(selectedSubcategory)),
+    fetchData: (url) => dispatch(fetchEvents(url)),
+    showFixture: (fixture) => dispatch(showFixture(fixture))
   }
 };
 

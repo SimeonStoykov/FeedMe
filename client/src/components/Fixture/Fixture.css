@@ -1,0 +1,52 @@
+.fixture-container {
+    float: left;
+    width: 80%;
+}
+
+.market-title {
+    background-color: #132c6c;
+    color: #fff;
+    padding: 15px;
+    text-align: left;
+    margin: 0 auto;
+    width: 80%;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.outcome-wrapper {
+    margin: 0 auto;
+    width: 81.5%;
+    border-bottom: 2px solid #e4ebf3;
+    border-left: 2px solid #e4ebf3;
+    border-right: 2px solid #e4ebf3;
+}
+
+.outcome-title {
+    display: inline-block;
+    width: 74%;
+    color: #484848;
+    border-right: 2px solid #e4ebf3;
+    padding: 15px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.outcome-price,
+.outcome-price-suspended {
+    display: inline-block;
+    width: 21%;
+    color: #484848;
+    color: #d92231;
+    padding: 15px;
+    font-weight: bold;
+}
+
+.outcome-price:hover {
+    background-color: #dce3ed; 
+    cursor: pointer;
+}
+
+.outcome-price-suspended {
+    cursor: not-allowed;
+}
