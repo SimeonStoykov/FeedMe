@@ -26,6 +26,20 @@ export const updateMarket = data => {
   }
 };
 
+export const addOutcome = data => {
+  return {
+    type: 'ADD_OUTCOME',
+    data
+  }
+};
+
+export const updateOutcome = data => {
+  return {
+    type: 'UPDATE_OUTCOME',
+    data
+  }
+};
+
 export const selectCategory = data => {
   return {
     type: 'SELECT_CATEGORY',

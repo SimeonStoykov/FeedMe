@@ -81,7 +81,9 @@ module.exports = function (data, events, previousData, database, io) {
                     if (database) {
                         let query = { 'markets.marketId': outcome.marketId };
                         let newValues = { $push: { 'markets.$.outcomes': outcome } };
-                        database.collection('events').updateOne(query, newValues);
+                        database.collection('events').updateOne(query, newValues, (err, doc) => {
+                            outcome.displayed && io.sockets.emit('newOutcomeAdded', outcome);
+                        });
                     } else if (events) { // Unit testing with in memory object
                         for (let i = 0; i < events.length; i++) {
                             let currentEvent = events[i];
@@ -115,7 +117,6 @@ module.exports = function (data, events, previousData, database, io) {
                             if (doc.value) {
                                 emitValue = Object.assign(doc.value, newEventData);
                             }
-                            console.log(emitValue);
                             io.sockets.emit('eventUpdated', emitValue);
                         });
                     } else if (events) { // Unit testing with in memory object
@@ -150,7 +151,15 @@ module.exports = function (data, events, previousData, database, io) {
                             }
                         };
                         database.collection('events').findOneAndUpdate(query, newValues, (err, doc) => {
-                            io.sockets.emit('marketUpdated', newMarketData);
+                            if (err) throw err;
+                            let updateMarketEmitValue = {};
+                            if (doc.value) {
+                                let market = doc.value.markets.find(m => m.marketId === newMarketData.marketId);
+                                if (market) {
+                                    updateMarketEmitValue = Object.assign(market, newMarketData);
+                                }
+                            }
+                            io.sockets.emit('marketUpdated', updateMarketEmitValue);
                         });
                     } else if (events) { // Unit testing with in memory object
                         let event = events.find(rec => rec.eventId === dataElements[4]);
@@ -189,11 +198,26 @@ module.exports = function (data, events, previousData, database, io) {
                                             [`markets.${marketIndex}.outcomes.${outcomeIndex}.suspended`]: newOutcomeData.suspended
                                         }
                                     };
-                                    database.collection('events').updateOne({ eventId: res.eventId }, newValues);
+                                    database.collection('events').findOneAndUpdate({ eventId: res.eventId }, newValues, (err, doc) => {
+                                        if (err) throw err;
+                                        let updateOutcomeEmitValue = {};
+
+                                        if (doc.value) {
+                                            let market = doc.value.markets.find(m => m.marketId === dataElements[4]);
+
+                                            if (market) {
+                                                let outcome = market.outcomes.find(o => o.outcomeId === dataElements[5]);
+                                                outcome && (updateOutcomeEmitValue = Object.assign(outcome, newOutcomeData));
+                                            }
+                                        }
+
+                                        io.sockets.emit('outcomeUpdated', updateOutcomeEmitValue);
+                                    });
+
                                 }
                             }
                         );
-                    } else if (events) {
+                    } else if (events) { // Unit testing with in memory object
                         for (let i = 0; i < events.length; i++) {
                             let currentEvent = events[i];
                             let market = currentEvent.markets.find(rec => rec.marketId === dataElements[4]);

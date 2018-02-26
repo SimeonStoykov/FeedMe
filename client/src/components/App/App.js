@@ -7,6 +7,8 @@ import {
   updateEvent,
   addMarket,
   updateMarket,
+  addOutcome,
+  updateOutcome,
   selectCategory,
   selectSubcategory,
   fetchEvents,
@@ -17,6 +19,7 @@ import Category from '../Category/Category';
 import Subcategory from '../Subcategory/Subcategory';
 import FixturesList from '../FixturesList/FixturesList';
 import Fixture from '../Fixture/Fixture';
+
 let socket = io('http://127.0.0.1:8787');
 
 let categories = [
@@ -92,6 +95,12 @@ class App extends Component {
     socket.on('marketUpdated', updatedMarket => {
       props.updateMarket(updatedMarket);
     });
+    socket.on('newOutcomeAdded', newOutcome => {
+      props.addOutcome(newOutcome);
+    });
+    socket.on('outcomeUpdated', updatedOutcome => {
+      props.updateOutcome(updatedOutcome);
+    });
   }
 
   componentWillUnmount() {
@@ -137,6 +146,8 @@ const mapDispatchToProps = (dispatch) => {
     updateEvent: (updatedEvent) => dispatch(updateEvent(updatedEvent)),
     addMarket: (newMarket) => dispatch(addMarket(newMarket)),
     updateMarket: (updatedMarket) => dispatch(updateMarket(updatedMarket)),
+    addOutcome: (newOutcome) => dispatch(addOutcome(newOutcome)),
+    updateOutcome: (updatedOutcome) => dispatch(updateOutcome(updatedOutcome)),
     selectCategory: (selectedCategory) => dispatch(selectCategory(selectedCategory)),
     selectSubcategory: (selectedSubcategory) => dispatch(selectSubcategory(selectedSubcategory)),
     fetchData: (url) => dispatch(fetchEvents(url)),

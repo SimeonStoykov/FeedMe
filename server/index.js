@@ -29,34 +29,18 @@ router.get('/events', (req, res) => {
     let category = req.query.category || '';
     let subCategory = req.query.subCategory || '';
     let events = [];
-    let perPage = 10;
-    let page = req.params.page || 1;
+    let records = 10;
 
-    let cursor = database.collection('events').find({category, subCategory, displayed: true}).limit(perPage);
-        // .skip((perPage * page) - perPage)
-        // .limit(perPage);
-        // .exec(function (err, events) {
-        //     cursor.count().exec(function(err, count) {
-        //         if (err) return next(err);
-        //         res.json({
-        //             events,
-        //             current: page,
-        //             pages: Math.ceil(count / perPage)
-        //         });
-        //     })
-        // });
-        cursor.forEach((doc, err) => {
-            if (err) throw err;
-            events.push(doc);
-        }, () => {
-            res.json({ 
-                events,
-                // pagination: {
-                //     page,
-                //     perPage,
-                // }
-            });
+    let cursor = database.collection('events').find({ category, subCategory, displayed: true }).limit(records);
+
+    cursor.forEach((doc, err) => {
+        if (err) throw err;
+        events.push(doc);
+    }, () => {
+        res.json({
+            events
         });
+    });
 });
 
 app.use('/api', router);
@@ -87,7 +71,3 @@ tcpClient.on('data', buffer => {
 tcpClient.on('close', () => {
     console.log('Connection closed');
 });
-
-// TO DO:
-// 1. Emit events when market or outcome is created/updated and check in the client if this market/outcome is in the events array and if it is in it update it
-// 3. Show Load more button to load another 10 events

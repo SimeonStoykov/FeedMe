@@ -24,7 +24,7 @@
 
 .outcome-title {
     display: inline-block;
-    width: 74%;
+    width: 71%;
     color: #484848;
     border-right: 2px solid #e4ebf3;
     padding: 15px;
@@ -35,7 +35,7 @@
 .outcome-price,
 .outcome-price-suspended {
     display: inline-block;
-    width: 21%;
+    width: 21.9%;
     color: #484848;
     color: #d92231;
     padding: 15px;
