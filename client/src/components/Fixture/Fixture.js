@@ -2,7 +2,7 @@ import React from 'react';
 import './Fixture.css';
 
 const Fixture = ({ selectedFixture }) => {
-    let markets = selectedFixture.markets.filter(m => m.displayed);
+    let markets = (selectedFixture &&  selectedFixture.markets && selectedFixture.markets.filter(m => m.displayed)) || [];
 
     return (
         <div className="fixture-container">

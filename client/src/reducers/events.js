@@ -20,7 +20,7 @@ const eventsReducer = (state = initialState, action) => {
             }
             return state;
         case 'UPDATE_EVENT':
-            let updatedEvent = action.data;
+            let updatedEvent = action.data || {};
             let existingEventIndex = state.events.findIndex(e => e.eventId === updatedEvent.eventId);
 
             if (existingEventIndex === -1) { // Event does not exists in current array
@@ -61,6 +61,73 @@ const eventsReducer = (state = initialState, action) => {
                 };
             }
 
+            return state;
+        case 'ADD_MARKET':
+            let newMarket = action.data;
+            let eventMarketIsIn = state.events.find(e => e.eventId === newMarket.eventId);
+
+            if (eventMarketIsIn) {
+                return {
+                    ...state,
+                    events: state.events.map(e => {
+                        if (e.eventId === eventMarketIsIn.eventId) {
+                            return {
+                                ...e,
+                                markets: [...e.markets, newMarket]
+                            };
+                        }
+                        return e;
+                    }),
+                    fetchingEventsError: initialState.fetchingEventsError
+                };
+            }
+            return state;
+        case 'UPDATE_MARKET':
+            let updatedMarket = action.data;
+            let eventOfTheMarket = state.events.find(e => e.eventId === updatedMarket.eventId);
+
+            if (eventOfTheMarket) {
+                eventOfTheMarket.markets = eventOfTheMarket.markets || [];
+                let indexOfTheMarket = eventOfTheMarket.markets.findIndex(m => m.marketId === updatedMarket.marketId);
+                if (!updatedMarket.displayed) {
+                    return {
+                        ...state,
+                        events: state.events.map(e => {
+                            if (e.eventId === eventOfTheMarket.eventId) {
+                                return {
+                                    ...e,
+                                    markets: e.markets.filter(m => m.marketId !== updatedMarket.marketId)
+                                };
+                            }
+                            return e;
+                        }),
+                        fetchingEventsError: initialState.fetchingEventsError
+                    };
+                }
+                return {
+                    ...state,
+                    events: state.events.map(e => {
+                        if (e.eventId === eventOfTheMarket.eventId) {
+                            return {
+                                ...e,
+                                markets: e.markets.map((m, i) => {
+                                    if (i === indexOfTheMarket) {
+                                        return {
+                                            ...m,
+                                            name: updatedMarket.name,
+                                            displayed: updatedMarket.displayed,
+                                            suspended: updatedMarket.suspended
+                                        };
+                                    }
+                                    return m;
+                                })
+                            };
+                        }
+                        return e;
+                    }),
+                    fetchingEventsError: initialState.fetchingEventsError
+                };
+            }
             return state;
         case 'SELECT_CATEGORY':
             return {

@@ -12,6 +12,20 @@ export const updateEvent = data => {
   }
 };
 
+export const addMarket = data => {
+  return {
+    type: 'ADD_MARKET',
+    data
+  }
+};
+
+export const updateMarket = data => {
+  return {
+    type: 'UPDATE_MARKET',
+    data
+  }
+};
+
 export const selectCategory = data => {
   return {
     type: 'SELECT_CATEGORY',
@@ -54,7 +68,7 @@ export const eventsFetchSuccess = response => {
   };
 }
 
-export function fetchEvents(url) {
+export const fetchEvents = url => {
   return dispatch => {
     dispatch(eventsAreLoading(true));
 

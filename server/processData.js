@@ -59,7 +59,9 @@ module.exports = function (data, events, previousData, database, io) {
                     if (database) {
                         let query = { eventId: market.eventId };
                         let newValues = { $push: { markets: market } };
-                        database.collection('events').updateOne(query, newValues);
+                        database.collection('events').updateOne(query, newValues, (err, doc) => {
+                            market.displayed && io.sockets.emit('newMarketAdded', market);
+                        });
                     } else if (events) { // Unit testing with in memory object
                         let event = events.find(rec => rec.eventId === market.eventId);
                         event && event.markets.push(market);
@@ -108,8 +110,13 @@ module.exports = function (data, events, previousData, database, io) {
 
                     if (database) {
                         let query = { eventId: dataElements[4] };
-                        database.collection('events').updateOne(query, { $set: newEventData }, (err, doc) => {
-                            io.sockets.emit('eventUpdated', newEventData);
+                        database.collection('events').findOneAndUpdate(query, { $set: newEventData }, (err, doc) => {
+                            let emitValue = {};
+                            if (doc.value) {
+                                emitValue = Object.assign(doc.value, newEventData);
+                            }
+                            console.log(emitValue);
+                            io.sockets.emit('eventUpdated', emitValue);
                         });
                     } else if (events) { // Unit testing with in memory object
                         let existingEvent = events.find(rec => rec.eventId === dataElements[4]);
@@ -126,6 +133,8 @@ module.exports = function (data, events, previousData, database, io) {
                     break;
                 case 'market': {
                     let newMarketData = {
+                        eventId: dataElements[4],
+                        marketId: dataElements[5],
                         name: dataElements[6],
                         displayed: dataElements[7] === '1',
                         suspended: dataElements[8] === '1'
@@ -140,7 +149,9 @@ module.exports = function (data, events, previousData, database, io) {
                                 'markets.$.suspended': newMarketData.suspended
                             }
                         };
-                        database.collection('events').updateOne(query, newValues);
+                        database.collection('events').findOneAndUpdate(query, newValues, (err, doc) => {
+                            io.sockets.emit('marketUpdated', newMarketData);
+                        });
                     } else if (events) { // Unit testing with in memory object
                         let event = events.find(rec => rec.eventId === dataElements[4]);
                         if (event) {

@@ -91,4 +91,3 @@ tcpClient.on('close', () => {
 // TO DO:
 // 1. Emit events when market or outcome is created/updated and check in the client if this market/outcome is in the events array and if it is in it update it
 // 3. Show Load more button to load another 10 events
-// 4. On event click open the event details + outcomes

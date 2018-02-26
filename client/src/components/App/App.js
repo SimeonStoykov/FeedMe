@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import {
   addEvent,
   updateEvent,
+  addMarket,
+  updateMarket,
   selectCategory,
   selectSubcategory,
   fetchEvents,
@@ -84,6 +86,12 @@ class App extends Component {
     socket.on('eventUpdated', updatedEvent => {
       props.updateEvent(updatedEvent);
     });
+    socket.on('newMarketAdded', newMarket => {
+      props.addMarket(newMarket);
+    });
+    socket.on('marketUpdated', updatedMarket => {
+      props.updateMarket(updatedMarket);
+    });
   }
 
   componentWillUnmount() {
@@ -127,6 +135,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addEvent: (newEvent) => dispatch(addEvent(newEvent)),
     updateEvent: (updatedEvent) => dispatch(updateEvent(updatedEvent)),
+    addMarket: (newMarket) => dispatch(addMarket(newMarket)),
+    updateMarket: (updatedMarket) => dispatch(updateMarket(updatedMarket)),
     selectCategory: (selectedCategory) => dispatch(selectCategory(selectedCategory)),
     selectSubcategory: (selectedSubcategory) => dispatch(selectSubcategory(selectedSubcategory)),
     fetchData: (url) => dispatch(fetchEvents(url)),
