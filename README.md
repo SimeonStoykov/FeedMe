@@ -19,3 +19,5 @@ Steps to start the project:
 5. Open the app folder and go to the **client** folder. Open the console from it, run the command **npm install**. Then, from the same folder, open the console and start the client (Front-end) through the **npm run start** command.
 
 **Front-end** is available at **127.0.0.1:3000** and the **http server** runs on **127.0.0.1:8787**
+
+To run the **Unit Tests**: Open the app folder, go to the server folder, open the console from it and run the command **npm run test**
