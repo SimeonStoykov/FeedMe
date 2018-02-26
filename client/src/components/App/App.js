@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import {
   addEvent,
+  updateEvent,
   selectCategory,
   selectSubcategory,
   fetchEvents,
@@ -14,7 +15,7 @@ import Category from '../Category/Category';
 import Subcategory from '../Subcategory/Subcategory';
 import FixturesList from '../FixturesList/FixturesList';
 import Fixture from '../Fixture/Fixture';
-// let socket = io('http://127.0.0.1:8787');
+let socket = io('http://127.0.0.1:8787');
 
 let categories = [
   {
@@ -77,14 +78,16 @@ let subcategories = {
 class App extends Component {
   constructor(props) {
     super(props);
-    // socket.on('eventAdded', data => {
-    //   console.log(data);
-    //   props.addEvent(data);
-    // });
+    socket.on('newEventAdded', newEvent => {
+      props.addEvent(newEvent);
+    });
+    socket.on('eventUpdated', updatedEvent => {
+      props.updateEvent(updatedEvent);
+    });
   }
 
   componentWillUnmount() {
-    // socket.disconnect();
+    socket.disconnect();
   }
 
   render() {
@@ -122,7 +125,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addEvent: (event) => dispatch(addEvent(event)),
+    addEvent: (newEvent) => dispatch(addEvent(newEvent)),
+    updateEvent: (updatedEvent) => dispatch(updateEvent(updatedEvent)),
     selectCategory: (selectedCategory) => dispatch(selectCategory(selectedCategory)),
     selectSubcategory: (selectedSubcategory) => dispatch(selectSubcategory(selectedSubcategory)),
     fetchData: (url) => dispatch(fetchEvents(url)),

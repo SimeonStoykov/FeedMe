@@ -32,7 +32,7 @@ router.get('/events', (req, res) => {
     let perPage = 10;
     let page = req.params.page || 1;
 
-    let cursor = database.collection('events').find({category, subCategory, displayed: true}).limit(perPage).sort({startTime: 1});
+    let cursor = database.collection('events').find({category, subCategory, displayed: true}).limit(perPage);
         // .skip((perPage * page) - perPage)
         // .limit(perPage);
         // .exec(function (err, events) {

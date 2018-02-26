@@ -39,7 +39,7 @@ module.exports = function (data, events, previousData, database, io) {
 
                     if (database) {
                         database.collection('events').insertOne(event, (err, doc) => {
-                            io.sockets.emit('eventAdded', event);
+                            event.displayed && io.sockets.emit('newEventAdded', event);
                         });
                     } else if (events) { // Unit testing with in memory object
                         events.push(event);
@@ -97,6 +97,7 @@ module.exports = function (data, events, previousData, database, io) {
             switch (type) {
                 case 'event': {
                     let newEventData = {
+                        eventId: dataElements[4],
                         category: dataElements[5],
                         subCategory: dataElements[6],
                         name: dataElements[7],
@@ -107,7 +108,9 @@ module.exports = function (data, events, previousData, database, io) {
 
                     if (database) {
                         let query = { eventId: dataElements[4] };
-                        database.collection('events').updateOne(query, { $set: newEventData });
+                        database.collection('events').updateOne(query, { $set: newEventData }, (err, doc) => {
+                            io.sockets.emit('eventUpdated', newEventData);
+                        });
                     } else if (events) { // Unit testing with in memory object
                         let existingEvent = events.find(rec => rec.eventId === dataElements[4]);
                         if (existingEvent) {

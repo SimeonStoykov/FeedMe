@@ -5,6 +5,13 @@ export const addEvent = data => {
   }
 };
 
+export const updateEvent = data => {
+  return {
+    type: 'UPDATE_EVENT',
+    data
+  }
+};
+
 export const selectCategory = data => {
   return {
     type: 'SELECT_CATEGORY',

@@ -10,7 +10,58 @@ const initialState = {
 const eventsReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ADD_EVENT':
-            return { ...state, events: [...state.events, action.data] };
+            let newEvent = action.data;
+            if (state.events.length < 10 && state.selectedCategory === newEvent.category && state.selectedSubcategory === newEvent.subCategory) {
+                return {
+                    ...state,
+                    events: [...state.events, newEvent],
+                    fetchingEventsError: initialState.fetchingEventsError
+                };
+            }
+            return state;
+        case 'UPDATE_EVENT':
+            let updatedEvent = action.data;
+            let existingEventIndex = state.events.findIndex(e => e.eventId === updatedEvent.eventId);
+
+            if (existingEventIndex === -1) { // Event does not exists in current array
+                if (updatedEvent.displayed && state.events.length < 10 && state.selectedCategory === updatedEvent.category && state.selectedSubcategory === updatedEvent.subCategory) {
+                    return {
+                        ...state,
+                        events: [...state.events, updatedEvent],
+                        fetchingEventsError: initialState.fetchingEventsError
+                    };
+                }
+                return state;
+            } else {
+                if (!updatedEvent.displayed) { // The event should not be displayed so remove it from the events array
+                    return {
+                        ...state,
+                        events: state.events.filter(e => e.eventId !== updatedEvent.eventId),
+                        fetchingEventsError: initialState.fetchingEventsError
+                    };
+                }
+
+                return {
+                    ...state,
+                    events: state.events.map((e, i) => {
+                        if (i === existingEventIndex) {
+                            return {
+                                ...e,
+                                category: updatedEvent.category,
+                                subCategory: updatedEvent.subCategory,
+                                name: updatedEvent.name,
+                                startTime: updatedEvent.startTime,
+                                displayed: updatedEvent.displayed,
+                                suspended: updatedEvent.suspended
+                            };
+                        }
+                        return e;
+                    }),
+                    fetchingEventsError: initialState.fetchingEventsError
+                };
+            }
+
+            return state;
         case 'SELECT_CATEGORY':
             return {
                 ...state,
